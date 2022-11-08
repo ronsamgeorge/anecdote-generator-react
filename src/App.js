@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+const Header = (props) => {
+  return(
+    <div>
+      <h1>{props.text}</h1>
+    </div>
+  )
+}
+
 const Button = (props) => {
   return(
     <button onClick={props.onClick}>{props.text}</button>
@@ -10,6 +18,22 @@ const DisplayVotes = (props) => {
   return(
     <div>
       <p> This anecdote has {props.vote} votes</p>
+    </div>
+  )
+}
+
+const DisplayMax = ({didVote, anecdotes, votes, maxVote}) => {
+  if (!didVote){
+    return(
+      <div>
+        <p>There are no votes Yet</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <p>max votes is {anecdotes[maxVote]} which has {votes[maxVote]}</p>
     </div>
   )
 }
@@ -26,8 +50,11 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
 
+
   const [random, setRandom] = useState(0);
-  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
+  const [didVote, setDidVote] = useState(false);
+  const [maxIndex, setMaxIndex] = useState(0);
 
   // function to generate random
   const getRandomInt = (min, max) => {
@@ -41,20 +68,34 @@ const App = () => {
     setRandom(tempRandom);
   }
 
+  // on voting function is called.
+  // will update the votes array by setting it to the new array 
+
   const updateVote = (props) => {
-    const tempVoteArray = [...votes];
-    tempVoteArray[random]++;
-    console.log(tempVoteArray);
-    setVotes(tempVoteArray);
+    const tempVoteArray = [...votes];  // creates new duplicate of the votes array  
+    tempVoteArray[random]++;          // increases  the vote for the specific anecdote
+    setVotes(tempVoteArray);          //  set the votes array with the new one
+    updateMax(tempVoteArray[random]); // update the max counter if the recently voted anecdote has the max votes
+    setDidVote(true);
   }
 
+  const updateMax = (newValue) => {
+    if(votes[maxIndex] < newValue){
+      setMaxIndex(random);
+    }
+  }
 
   return (
     <div>
-      <p>{anecdotes[random]}</p>
+      <Header text="Anecdote of the day" />
+      <h3>{anecdotes[random]}</h3>
       <DisplayVotes vote={votes[random]} />
       <Button onClick={updateVote} text="Vote for anecdote"/>
       <Button onClick={updateRandom} text={"Generate Anecdote"}/>
+
+      <Header text="Anecdote with the max vote" />
+      <DisplayMax didVote={didVote} anecdotes={anecdotes} votes={votes} maxVote={maxIndex}/>
+      
     </div>
   )
 }
