@@ -1,9 +1,16 @@
 import { useState } from "react";
 
 const Button = (props) => {
-
   return(
     <button onClick={props.onClick}>{props.text}</button>
+  )
+}
+
+const DisplayVotes = (props) => {
+  return(
+    <div>
+      <p> This anecdote has {props.vote} votes</p>
+    </div>
   )
 }
 
@@ -20,6 +27,7 @@ const App = () => {
   ]
 
   const [random, setRandom] = useState(0);
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   // function to generate random
   const getRandomInt = (min, max) => {
@@ -33,10 +41,19 @@ const App = () => {
     setRandom(tempRandom);
   }
 
+  const updateVote = (props) => {
+    const tempVoteArray = [...votes];
+    tempVoteArray[random]++;
+    console.log(tempVoteArray);
+    setVotes(tempVoteArray);
+  }
+
 
   return (
     <div>
       <p>{anecdotes[random]}</p>
+      <DisplayVotes vote={votes[random]} />
+      <Button onClick={updateVote} text="Vote for anecdote"/>
       <Button onClick={updateRandom} text={"Generate Anecdote"}/>
     </div>
   )
