@@ -33,7 +33,7 @@ const DisplayMax = ({didVote, anecdotes, votes, maxVote}) => {
 
   return (
     <div>
-      <p>max votes is {anecdotes[maxVote]} which has {votes[maxVote]}</p>
+      <p>max votes is "<em>{anecdotes[maxVote]}</em>" , which has {votes[maxVote]} votes</p>
     </div>
   )
 }
